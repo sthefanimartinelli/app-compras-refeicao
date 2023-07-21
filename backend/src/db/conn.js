@@ -16,9 +16,16 @@ require('dotenv').config();
 //   }
 // }
 
+const MONGO_USER = process.env.MONGO_INITDB_ROOT_USERNAME;
+const MONGO_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD;
+
 async function main() {
   try {
-    await mongoose.connect("mongodb://root:example@enafood_db:27017/database", {
+    // await mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}@enafood_db:27017/database`, {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    // });
+    await mongoose.connect("mongodb://enafood_db:27017/database", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
