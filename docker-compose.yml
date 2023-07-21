@@ -1,0 +1,56 @@
+version: "3.1"
+
+services:
+  # Serviço que irá rodar o node
+  api-enafood:
+    # Imagem base do container
+    build: .
+    container_name: enafood_api
+    # Mesmo que `docker run -t`
+    tty: true
+    # Mesmo que `docker run -i`
+    stdin_open: true
+    # Restarta a imagem caso algo a faça parar
+    restart: always
+    # Lista de volumes (diretórios) mapeados de fora para dentro do container
+    volumes:
+      # Monta o diretório atual, com todos os dados do projeto, 
+      # dentro do diretório /app
+      - ./:/app
+    # Lista de serviços do qual este serviço depende
+    depends_on:
+      # Precisa do banco funcionando antes de subir o node
+      - db
+    # Lista de portas mapeadas de dentro para fora do container
+    # na notação porta_de_fora:porta_de_dentro
+    ports:
+      # Expõe a porta padrão da aplicação:
+      - 3000:3000
+    # Configura as variáveis de ambiente dentro do container
+    # environment - por enquanto não usaremos nenhuma variável:
+    #   DB_USER: root
+    #   DB_PASSWORD: password
+    #   DB_HOST: db
+    #   DB_PORT: 27017
+    #   DB_NAME: Enafood
+    #   JWT_SECRET: secret
+
+  # Serviço que irá rodar o banco de dados
+  db:
+    image: mongo
+    container_name: enafood_db
+    restart: always
+    # Lista de portas mapeadas de dentro para fora do container
+    # na notação porta_de_fora:porta_de_dentro
+    ports:
+      # Expõe a porta padrão do banco de dados
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: database
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
