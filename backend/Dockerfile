@@ -2,13 +2,13 @@ FROM node:16
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copia o package.json e o package-lock.json
+COPY backend/package*.json ./
 
+# Instala os pacotes
 RUN npm install
 
-COPY src ./src
-COPY .gitignore ./
+# Copia o conteudo de src pra /app
+COPY backend/src ./
 
-# CMD ["node", "src/app.js"]
-
-CMD nodemon -L --watch . src/app.js
+CMD ["npm", "start"]

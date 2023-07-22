@@ -1,56 +1,49 @@
 version: "3.1"
 
 services:
-  # Serviço que irá rodar o node
   api-enafood:
-    # Imagem base do container
     build: .
     container_name: enafood_api
-    # Mesmo que `docker run -t`
-    tty: true
-    # Mesmo que `docker run -i`
-    stdin_open: true
-    # Restarta a imagem caso algo a faça parar
-    restart: always
-    # Lista de volumes (diretórios) mapeados de fora para dentro do container
+    restart: unless-stopped
     volumes:
-      # Monta o diretório atual, com todos os dados do projeto, 
-      # dentro do diretório /app
-      - ./:/app
-    # Lista de serviços do qual este serviço depende
+      - ./backend/src:/app/
+      - ./backend/package.json:/app/package.json
+      - /app/node_modules # volume anônimo, rodar com docker compose up --renew-anon-volumes
     depends_on:
-      # Precisa do banco funcionando antes de subir o node
       - db
-    # Lista de portas mapeadas de dentro para fora do container
-    # na notação porta_de_fora:porta_de_dentro
     ports:
-      # Expõe a porta padrão da aplicação:
       - 3000:3000
-    # Configura as variáveis de ambiente dentro do container
-    # environment - por enquanto não usaremos nenhuma variável:
-    #   DB_USER: root
-    #   DB_PASSWORD: password
-    #   DB_HOST: db
-    #   DB_PORT: 27017
-    #   DB_NAME: Enafood
-    #   JWT_SECRET: secret
+    environment:
+      # DB_USER: root
+      # DB_PASSWORD: db_password
+      # DB_HOST: enafood_db
+      # DB_PORT: 27017
+      # DB_NAME: enafood_database
 
-  # Serviço que irá rodar o banco de dados
   db:
-    image: mongo:latest
+    image: mongo
     container_name: enafood_db
-    restart: always
-    # Lista de portas mapeadas de dentro para fora do container
-    # na notação porta_de_fora:porta_de_dentro
+    restart: unless-stopped
     ports:
       # Expõe a porta padrão do banco de dados
       - 27017:27017
     environment:
-      # MONGO_INITDB_ROOT_USERNAME: root
-      # MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: database
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: some_root_password
+      # MONGO_INITDB_DATABASE This variable allows you to specify 
+      # the name of a database to be used for creation scripts in 
+      # /docker-entrypoint-initdb.d/*.js.
+      # MongoDB is fundamentally designed for "create on first use",
+      # so if you do not insert data with your JavaScript files, 
+      # then no database is created.
+      MONGO_INITDB_DATABASE: enafood_database
+      DB_USER: root
+      DB_PASSWORD: db_password
+      DB_NAME: enafood_database
     volumes:
       - mongodb_data:/data/db
+      - ./backend/mongo_init.js:/docker-entrypoint-initdb.d/mongo_init.js:ro
+
 
 volumes:
   mongodb_data:
