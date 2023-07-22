@@ -1,8 +1,9 @@
 const express = require("express");
-const app = express();
-app.use(express.json());
 const cartRouter = require("./routes/cart.router");
 const productRouter = require("./routes/product.router");
+
+const app = express();
+app.use(express.json());
 
 const PORT = 3000;
 
@@ -12,7 +13,6 @@ conn();
 
 // Configuração das rotas
 app.use('/cart', cartRouter);
-
 app.use('/products', productRouter);
 
 app.listen(PORT, function() {
