@@ -4,6 +4,6 @@ const cartController = require("../controllers/cartController");
 
 cartRouter.post("/", cartController.createCart);
 
-cartRouter.post("/:cartId", cartController.updateCart);
+cartRouter.put("/:cartId", cartController.updateCart);
 
 module.exports = cartRouter;
