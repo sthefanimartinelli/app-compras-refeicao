@@ -1,4 +1,4 @@
-const { Cart: CartModel } = require("../models/CartModel");
+const CartModel = require("../models/CartModel");
 
 const createCart = async (req, res) => {
   try {
@@ -9,14 +9,14 @@ const createCart = async (req, res) => {
     }, 0)
 
     const cart = new CartModel({
+      customerEmail,
+      customerName,
       products,
       totalPrice,
-      customerName,
-      customerEmail,
     });
 
     await cart.save();
-    res.status(201).json({ message: "Carrinho criado com sucesso" });
+    res.status(201).json({ message: "Carrinho criado com sucesso", cart });
   } catch (error) {
     res.status(500).json({ message: "Erro ao criar carrinho" });
   }
