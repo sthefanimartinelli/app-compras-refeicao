@@ -20,7 +20,7 @@ const createProduct = async (req, res) => {
     });
 
     await product.save();
-    res.status(201).json({ message: "Produto criado com sucesso" });
+    res.status(201).json({ message: "Produto criado com sucesso", product });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Erro ao criar produto" });
